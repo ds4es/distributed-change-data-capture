@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to test’s documentation! &mdash; test 0.0.1 documentation</title>
+  <title>Welcome to A Working Apache Kafka Message Queue’s documentation! &mdash; test 0.0.1 documentation</title>
   
 
   
@@ -80,8 +80,20 @@
             
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Welcome to test’s documentation!</a></li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#">Welcome to A Working Apache Kafka Message Queue’s documentation!</a><ul>
+<li><a class="reference internal" href="#first-connection-to-any-of-your-server">First connection to any of your server</a></li>
+<li><a class="reference internal" href="#server-1-setup-a-kafka-broker-and-zookeeper">Server 1: Setup a Kafka Broker and ZooKeeper</a></li>
+<li><a class="reference internal" href="#server-2-setup-a-kafka-client">Server 2: Setup a Kafka Client</a><ul>
+<li><a class="reference internal" href="#start-a-kafka-producer">Start a Kafka producer</a></li>
+<li><a class="reference internal" href="#start-a-kafka-consumer">Start a Kafka consumer</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#commands">Commands</a></li>
+<li><a class="reference internal" href="#test-with-mysql-server">Test with MySQL Server</a></li>
+<li><a class="reference internal" href="#suite">SUITE</a></li>
+<li><a class="reference internal" href="#source">Source</a></li>
+</ul>
+</li>
 </ul>
 </div>
             
@@ -127,7 +139,7 @@
     
       <li><a href="#">Docs</a> &raquo;</li>
         
-      <li>Welcome to test’s documentation!</li>
+      <li>Welcome to A Working Apache Kafka Message Queue’s documentation!</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -146,18 +158,191 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="welcome-to-test-s-documentation">
-<h1>Welcome to test’s documentation!<a class="headerlink" href="#welcome-to-test-s-documentation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="welcome-to-a-working-apache-kafka-message-queue-s-documentation">
+<h1>Welcome to A Working Apache Kafka Message Queue’s documentation!<a class="headerlink" href="#welcome-to-a-working-apache-kafka-message-queue-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<p>For the following instructions you will need 2 servers. Those instructions are for RHEL 8 / CentOS 8 ditributions and has been tested on DigitalOcean.</p>
+<p><em>We recommend the use of SSH Keys and Passphrase for remote connection to your server. On Linux, you can create it with ssh-keygen (see https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys–2 for details)</em></p>
+<div class="section" id="first-connection-to-any-of-your-server">
+<h2>First connection to any of your server<a class="headerlink" href="#first-connection-to-any-of-your-server" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+<li><p>Create a new user with root privileges</p></li>
+<li><p>Disable ssh connexion for the root user</p></li>
 </ul>
+<p>Connect to your server as <code class="docutils literal notranslate"><span class="pre">root</span></code> through your terminal</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="o">-</span><span class="n">i</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">private_key_file</span> <span class="n">root</span><span class="nd">@xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span>
+</pre></div>
+</div>
+<p>We have prepared a script to easier your task so that you only have to get it execute with your desired <code class="docutils literal notranslate"><span class="pre">user_name</span></code> and <code class="docutils literal notranslate"><span class="pre">user_pw</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dnf</span> <span class="n">install</span> <span class="n">wget</span> <span class="o">-</span><span class="n">y</span>
+<span class="n">wget</span> <span class="n">url_to</span><span class="o">/</span><span class="mi">00</span><span class="n">_user_creation</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="o">./</span><span class="mi">00</span><span class="n">_user_creation</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">./</span><span class="mi">00</span><span class="n">_user_creation</span><span class="o">.</span><span class="n">sh</span> <span class="n">user_name</span> <span class="n">user_pw</span>
+<span class="n">history</span> <span class="o">-</span><span class="n">c</span>
+</pre></div>
+</div>
+<p>Press Ctrl+D on Linux to log out as <code class="docutils literal notranslate"><span class="pre">root</span></code> and you will log back in under your newly created user.</p>
+</div>
+<div class="section" id="server-1-setup-a-kafka-broker-and-zookeeper">
+<h2>Server 1: Setup a Kafka Broker and ZooKeeper<a class="headerlink" href="#server-1-setup-a-kafka-broker-and-zookeeper" title="Permalink to this headline">¶</a></h2>
+<p><strong>Requirements:</strong> A minimum of 2GB RAM</p>
+<p>Connect to your server as your new <code class="docutils literal notranslate"><span class="pre">user_name</span></code> through your terminal</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="o">-</span><span class="n">i</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">private_key_file</span> <span class="n">user_name</span><span class="nd">@xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span>
+</pre></div>
+</div>
+<p>Setup Zookeeper and a Kafka broker</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">~/</span><span class="n">Scripts</span>
+<span class="n">wget</span> <span class="n">url_to</span><span class="o">/</span><span class="mi">01</span><span class="n">_zookeeper_kafka_broker_installation</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">P</span> <span class="o">~/</span><span class="n">Scripts</span>
+<span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="o">~/</span><span class="n">Scripts</span><span class="o">/</span><span class="mi">01</span><span class="n">_zookeeper_kafka_broker_installation</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">~/</span><span class="n">Scripts</span><span class="o">/</span><span class="mi">01</span><span class="n">_zookeeper_kafka_broker_installation</span><span class="o">.</span><span class="n">sh</span> <span class="n">broker_ip_address</span> <span class="n">broker_port</span>
+</pre></div>
+</div>
+<p>If everything is working fine, 2 tmux detached sessions should have been started:</p>
+<ul class="simple">
+<li><p>zookeeper-server-start</p></li>
+<li><p>kafka-server-start</p></li>
+</ul>
+<p>You can access 2 those tmux sessions respectively with:
+* <code class="docutils literal notranslate"><span class="pre">tmux</span> <span class="pre">attach-session</span> <span class="pre">-t</span> <span class="pre">zookeeper-server-start</span></code>
+* <code class="docutils literal notranslate"><span class="pre">tmux</span> <span class="pre">attach-session</span> <span class="pre">-t</span> <span class="pre">kafka-server-start</span></code></p>
+<p>(Ctrl+B, D to detach from the current tmux session)</p>
+</div>
+<div class="section" id="server-2-setup-a-kafka-client">
+<h2>Server 2: Setup a Kafka Client<a class="headerlink" href="#server-2-setup-a-kafka-client" title="Permalink to this headline">¶</a></h2>
+<p>We can distinguish 2 types of Kafka client :</p>
+<ul class="simple">
+<li><p>Producer: Creates a record and publishes it to the broker.</p></li>
+<li><p>Consumer: Consumes records from the broker.</p></li>
+</ul>
+<p>Connect to your 2nd server the <code class="docutils literal notranslate"><span class="pre">user_name</span></code> set through your terminal</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="o">-</span><span class="n">i</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">private_key_file</span> <span class="n">user_name</span><span class="nd">@xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span><span class="o">.</span><span class="n">xxx</span>
+</pre></div>
+</div>
+<p>Setup a Kafka Client</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">~/</span><span class="n">Scripts</span>
+<span class="n">wget</span> <span class="n">url_to</span><span class="o">/</span><span class="mi">02</span><span class="n">_producer_consumer_instance</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">P</span> <span class="o">~/</span><span class="n">Scripts</span>
+<span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="o">~/</span><span class="n">Scripts</span><span class="o">/</span><span class="mi">02</span><span class="n">_producer_consumer_instance</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">~/</span><span class="n">Scripts</span><span class="o">/</span><span class="mi">02</span><span class="n">_producer_consumer_instance</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<div class="section" id="start-a-kafka-producer">
+<h3>Start a Kafka producer<a class="headerlink" href="#start-a-kafka-producer" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">kafka</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">console</span><span class="o">-</span><span class="n">producer</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">broker</span><span class="o">-</span><span class="nb">list</span> <span class="n">kafka_broker_ip_address</span><span class="p">:</span><span class="n">broker_port</span> <span class="o">--</span><span class="n">topic</span> <span class="n">your_topic_name</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="start-a-kafka-consumer">
+<h3>Start a Kafka consumer<a class="headerlink" href="#start-a-kafka-consumer" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">kafka</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">console</span><span class="o">-</span><span class="n">consumer</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">kafka_broker_ip_address</span><span class="p">:</span><span class="n">broker_port</span> <span class="o">--</span><span class="n">topic</span> <span class="n">your_topic_name</span> <span class="o">--</span><span class="n">from</span><span class="o">-</span><span class="n">beginning</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="commands">
+<h2>Commands<a class="headerlink" href="#commands" title="Permalink to this headline">¶</a></h2>
+<p>List of all topics</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">kafka</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="nb">list</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="n">zookeeper_ip_address</span><span class="p">:</span><span class="n">zookeeper_port</span>
+</pre></div>
+</div>
+<p>Create a topic</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">kafka</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">create</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="n">zookeeper_ip_address</span><span class="p">:</span><span class="n">zookeeper_port</span> <span class="o">--</span><span class="n">replication</span><span class="o">-</span><span class="n">factor</span> <span class="mi">1</span> <span class="o">--</span><span class="n">partitions</span> <span class="mi">100</span> <span class="o">--</span><span class="n">topic</span> <span class="n">your_topic_name</span>
+</pre></div>
+</div>
+<p>Delete a topic</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">kafka</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="n">zookeeper_ip_address</span><span class="p">:</span><span class="n">zookeeper_port</span> <span class="o">--</span><span class="n">delete</span> <span class="o">--</span><span class="n">topic</span> <span class="n">your_topic_name</span>
+</pre></div>
+</div>
+<p>See the information about a topic.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">kafka</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">describe</span> <span class="o">--</span><span class="n">topic</span> <span class="n">your_topic_namee</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="n">zookeeper_ip_address</span><span class="p">:</span><span class="n">zookeeper_port</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="test-with-mysql-server">
+<h2>Test with MySQL Server<a class="headerlink" href="#test-with-mysql-server" title="Permalink to this headline">¶</a></h2>
+<p>Retrieve Kafka JDBC Connect and MySQL Connector Jars</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">url_to</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">connect</span><span class="o">-</span><span class="n">jdbc</span><span class="o">-</span><span class="mf">5.3</span><span class="o">.</span><span class="mf">1.</span><span class="n">jar</span> <span class="o">-</span><span class="n">P</span> <span class="o">~/</span><span class="n">kafka</span><span class="o">/</span><span class="n">libs</span><span class="o">/</span>
+<span class="n">wget</span> <span class="n">url_to</span><span class="o">/</span><span class="n">mysql</span><span class="o">-</span><span class="n">connector</span><span class="o">-</span><span class="n">java</span><span class="o">-</span><span class="mf">8.0</span><span class="o">.</span><span class="mf">17.</span><span class="n">jar</span> <span class="o">-</span><span class="n">P</span> <span class="o">~/</span><span class="n">kafka</span><span class="o">/</span><span class="n">libs</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>Start or restart Kafka server and Zookeeper server</p>
+<p>Start Connector</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tmux</span> <span class="n">new</span> <span class="o">-</span><span class="n">s</span> <span class="n">connector</span><span class="o">-</span><span class="n">start</span> <span class="o">-</span><span class="n">d</span>
+<span class="n">tmux</span> <span class="n">send</span><span class="o">-</span><span class="n">keys</span> <span class="s2">&quot;~/kafka/bin/connect-ditributed.sh ~/kafka/config/connect-distributed.properties&quot;</span> <span class="n">Enter</span>
+</pre></div>
+</div>
+<p>Install MySQL Server</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">dnf</span> <span class="n">install</span> <span class="n">mysql</span><span class="o">-</span><span class="n">server</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">start</span> <span class="n">mysqld</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="nb">list</span><span class="o">-</span><span class="n">units</span> <span class="o">|</span> <span class="n">grep</span> <span class="o">-</span><span class="n">E</span> <span class="s1">&#39;mysqld.service&#39;</span>
+</pre></div>
+</div>
+<p>Login to MySQL</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">mysql</span>
+</pre></div>
+</div>
+<p>Create and fill a table</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">DATABASE</span> <span class="k">IF</span> <span class="k">NOT</span> <span class="k">EXISTS</span> <span class="n">movies</span><span class="p">;</span>
+<span class="n">USE</span> <span class="n">movies</span><span class="p">;</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Members</span> <span class="p">(</span>
+  <span class="n">membership_number</span> <span class="nb">INT</span> <span class="n">AUTO_INCREMENT</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
+  <span class="n">full_names</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="p">,</span>
+  <span class="n">gender</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="p">,</span>
+  <span class="n">date_of_birth</span> <span class="nb">DATE</span> <span class="p">,</span>
+  <span class="n">physical_address</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="p">,</span>
+  <span class="n">postal_address</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="p">,</span>
+  <span class="n">contact_number</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">75</span><span class="p">)</span> <span class="p">,</span>
+  <span class="n">email</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
+  <span class="n">modified</span> <span class="k">TIMESTAMP</span> <span class="k">DEFAULT</span> <span class="k">CURRENT_TIMESTAMP</span>
+<span class="p">);</span>
+
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span><span class="p">(</span><span class="n">full_names</span><span class="p">,</span><span class="n">gender</span><span class="p">,</span><span class="n">physical_address</span><span class="p">,</span><span class="n">contact_number</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;Leonard Hofstadter&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;Woodcrest&#39;</span><span class="p">,</span><span class="s1">&#39;0845738767&#39;</span><span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span><span class="p">(</span><span class="n">full_names</span><span class="p">,</span><span class="n">gender</span><span class="p">,</span><span class="n">physical_address</span><span class="p">,</span><span class="n">contact_number</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;Sheldon Cooper&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;Woodcrest&#39;</span><span class="p">,</span> <span class="s1">&#39;0976736763&#39;</span><span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span><span class="p">(</span><span class="n">full_names</span><span class="p">,</span><span class="n">gender</span><span class="p">,</span><span class="n">physical_address</span><span class="p">,</span><span class="n">contact_number</span><span class="p">)</span><span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;0938867763&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;Rajesh Koothrappali&#39;</span><span class="p">,</span><span class="s1">&#39;Woodcrest&#39;</span><span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span><span class="p">(</span><span class="n">full_names</span><span class="p">,</span><span class="n">date_of_birth</span><span class="p">,</span><span class="n">gender</span><span class="p">,</span><span class="n">physical_address</span><span class="p">,</span><span class="n">contact_number</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;Leslie Winkle&#39;</span><span class="p">,</span><span class="s1">&#39;1984-02-14&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;Woodcrest&#39;</span><span class="p">,</span> <span class="s1">&#39;0987636553&#39;</span><span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="s1">&#39;Howard Wolowitz&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;1981-08-24&#39;</span><span class="p">,</span><span class="s1">&#39;SouthPark&#39;</span><span class="p">,</span><span class="s1">&#39;P.O. Box 4563&#39;</span><span class="p">,</span> <span class="s1">&#39;0987786553&#39;</span><span class="p">,</span> <span class="s1">&#39;lwolowitz[at]email.me&#39;</span><span class="p">,</span> <span class="k">CURRENT_TIMESTAMP</span><span class="p">);</span>
+
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">Members</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Launch jdbc source connector</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="o">--</span><span class="n">data</span> <span class="s1">&#39;{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;jdbc-source-connector&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;connector.class&quot;</span><span class="p">:</span> <span class="s2">&quot;io.confluent.connect.jdbc.JdbcSourceConnector&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tasks.max&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;connection.url&quot;</span><span class="p">:</span> <span class="s2">&quot;jdbc:mysql://localhost:3306/movies&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;connection.user&quot;</span><span class="p">:</span> <span class="s2">&quot;xxxxxx&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;connection.password&quot;</span><span class="p">:</span> <span class="s2">&quot;xxxxxx&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;incrementing&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;table.whitelist&quot;</span><span class="p">:</span> <span class="s2">&quot;Members&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;incrementing.column.name&quot;</span><span class="p">:</span> <span class="s2">&quot;membership_number&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;timestamp.column.name&quot;</span><span class="p">:</span> <span class="s2">&quot;modified&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;poll.interval.ms&quot;</span><span class="p">:</span> <span class="mi">1000</span>
+        <span class="p">}</span>
+<span class="p">}</span><span class="s1">&#39; http://xxx.xxx.xxx.xxx:8083/connectors</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="suite">
+<h2>SUITE<a class="headerlink" href="#suite" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://kafka.apache.org/documentation.html#connect_running">https://kafka.apache.org/documentation.html#connect_running</a></p></li>
+<li><p><a class="reference external" href="https://debezium.io/documentation/reference/install.html">https://debezium.io/documentation/reference/install.html</a></p></li>
+</ul>
+</div>
+<div class="section" id="source">
+<h2>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://dzone.com/articles/kafka-producer-and-consumer-example">https://dzone.com/articles/kafka-producer-and-consumer-example</a></p></li>
+</ul>
+</div>
 </div>
 
 
