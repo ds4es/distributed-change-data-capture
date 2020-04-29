@@ -34,7 +34,7 @@ We have prepared a script to easier your task so that you only have to get it ex
 .. code-block:: default
 	
 	dnf install wget -y
-	wget url_to/00_user_creation.sh
+	wget https://ds4es.org/distributed-change-data-capture/_static/scripts/00_user_creation.sh
 	chmod +x ./00_user_creation.sh
 	./00_user_creation.sh user_name user_pw
 	history -c
@@ -58,7 +58,7 @@ Setup Zookeeper and a Kafka broker
 .. code-block:: default
 
 	mkdir -p ~/Scripts
-	wget url_to/01_zookeeper_kafka_broker_installation.sh -P ~/Scripts
+	wget https://ds4es.org/distributed-change-data-capture/_static/scripts/01_zookeeper_kafka_broker_installation.sh -P ~/Scripts
 	chmod +x ~/Scripts/01_zookeeper_kafka_broker_installation.sh  
 	~/Scripts/01_zookeeper_kafka_broker_installation.sh broker_ip_address broker_port
 
@@ -93,7 +93,7 @@ Setup a Kafka Client
 .. code-block:: default
 
 	mkdir -p ~/Scripts
-	wget url_to/02_producer_consumer_instance.sh -P ~/Scripts
+	wget https://ds4es.org/distributed-change-data-capture/_static/scripts/02_producer_consumer_instance.sh -P ~/Scripts
 	chmod +x ~/Scripts/02_producer_consumer_instance.sh  
 	~/Scripts/02_producer_consumer_instance.sh
 
@@ -230,6 +230,7 @@ Launch jdbc source connector
 SUITE
 -----
 
+* [Streaming data from PostgreSQL to Kafka using Debezium](https://medium.com/@tilakpatidar/streaming-data-from-postgresql-to-kafka-using-debezium-a14a2644906d)
 * https://kafka.apache.org/documentation.html#connect_running
 * https://debezium.io/documentation/reference/install.html
 
