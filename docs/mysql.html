@@ -88,6 +88,7 @@
 <li><a class="reference internal" href="#test-sql-server">Test SQL Server</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id1">Replicate SQL Server CDC changes to MySql in real-time</a></li>
 </ul>
 </li>
 </ul>
@@ -157,10 +158,11 @@
   <div class="section" id="replicate-sql-server-cdc-changes-to-mysql-in-real-time">
 <h1>Replicate SQL Server CDC changes to MySql in real-time<a class="headerlink" href="#replicate-sql-server-cdc-changes-to-mysql-in-real-time" title="Permalink to this headline">¶</a></h1>
 <p>Source: <a class="reference external" href="https://medium.com/&#64;gvsbharish/real-time-sql-server-cdc-changes-to-mysql-using-debezium-kafka-connect-without-docker-1317804efe59">https://medium.com/&#64;gvsbharish/real-time-sql-server-cdc-changes-to-mysql-using-debezium-kafka-connect-without-docker-1317804efe59</a></p>
+<p><strong>Requirements:</strong> A minimum of 3GB RAM for SQL Server</p>
 <div class="section" id="installing-mysql-on-centos-8-rhel-8">
 <h2>Installing MySQL on CentOS 8 / RHEL 8<a class="headerlink" href="#installing-mysql-on-centos-8-rhel-8" title="Permalink to this headline">¶</a></h2>
 <p>Install MySQL Server</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">dnf</span> <span class="n">install</span> <span class="n">mysql</span><span class="o">-</span><span class="n">server</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">dnf</span> <span class="n">install</span> <span class="n">mysql</span><span class="o">-</span><span class="n">server</span> <span class="o">-</span><span class="n">y</span>
 <span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">start</span> <span class="n">mysqld</span>
 <span class="n">sudo</span> <span class="n">systemctl</span> <span class="nb">list</span><span class="o">-</span><span class="n">units</span> <span class="o">|</span> <span class="n">grep</span> <span class="o">-</span><span class="n">E</span> <span class="s1">&#39;mysqld.service&#39;</span>
 </pre></div>
@@ -175,11 +177,11 @@
 <p>Source: <a class="reference external" href="https://computingforgeeks.com/how-to-install-microsoft-sql-server-on-rhel-centos/">https://computingforgeeks.com/how-to-install-microsoft-sql-server-on-rhel-centos/</a></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add the Microsoft SQL Server 2019 repository</span>
 <span class="n">sudo</span> <span class="n">curl</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">packages</span><span class="o">.</span><span class="n">microsoft</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">rhel</span><span class="o">/</span><span class="mi">8</span><span class="o">/</span><span class="n">mssql</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="mf">2019.</span><span class="n">repo</span> <span class="o">-</span><span class="n">o</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">yum</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">mssql</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="mf">2019.</span><span class="n">repo</span>
-<span class="n">sudo</span>  <span class="n">curl</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">packages</span><span class="o">.</span><span class="n">microsoft</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">rhel</span><span class="o">/</span><span class="mi">8</span><span class="o">/</span><span class="n">prod</span><span class="o">.</span><span class="n">repo</span> <span class="o">-</span><span class="n">o</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">yum</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">msprod</span><span class="o">.</span><span class="n">repo</span>
+<span class="n">sudo</span> <span class="n">curl</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">packages</span><span class="o">.</span><span class="n">microsoft</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">rhel</span><span class="o">/</span><span class="mi">8</span><span class="o">/</span><span class="n">prod</span><span class="o">.</span><span class="n">repo</span> <span class="o">-</span><span class="n">o</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">yum</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">msprod</span><span class="o">.</span><span class="n">repo</span>
 <span class="c1"># Install MS SQL server</span>
-<span class="n">sudo</span> <span class="n">dnf</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">mssql</span><span class="o">-</span><span class="n">server</span>
+<span class="n">sudo</span> <span class="n">dnf</span> <span class="n">install</span> <span class="n">mssql</span><span class="o">-</span><span class="n">server</span> <span class="o">-</span><span class="n">y</span>
 <span class="c1"># Install SQL Server command-line tools</span>
-<span class="n">sudo</span> <span class="n">yum</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">mssql</span><span class="o">-</span><span class="n">tools</span> <span class="n">unixODBC</span><span class="o">-</span><span class="n">devel</span>
+<span class="n">sudo</span> <span class="n">dnf</span> <span class="n">install</span> <span class="n">mssql</span><span class="o">-</span><span class="n">tools</span> <span class="n">unixODBC</span><span class="o">-</span><span class="n">devel</span> <span class="o">-</span><span class="n">y</span>
 <span class="c1"># Confirm installation</span>
 <span class="n">rpm</span> <span class="o">-</span><span class="n">qi</span> <span class="n">mssql</span><span class="o">-</span><span class="n">server</span>
 <span class="c1"># Initialize MS SQL Database Engine</span>
@@ -204,6 +206,49 @@
 <span class="n">sqlcmd</span> <span class="o">-</span><span class="n">S</span> <span class="n">localhost</span> <span class="o">-</span><span class="n">U</span> <span class="n">SA</span>
 <span class="c1"># Show Database users</span>
 <span class="n">select</span> <span class="n">name</span> <span class="kn">from</span> <span class="nn">sysusers</span><span class="p">;</span>
+<span class="n">go</span>
+
+<span class="n">curl</span> <span class="o">-</span><span class="n">s</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ds4es</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">real</span><span class="o">-</span><span class="n">time</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">streaming</span><span class="o">-</span><span class="ow">and</span><span class="o">-</span><span class="n">ingestion</span><span class="o">/</span><span class="n">_static</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">sql</span><span class="o">/</span><span class="n">bike_stores_sample_database</span><span class="o">.</span><span class="n">sql</span> <span class="o">|</span> <span class="n">sqlcmd</span> <span class="o">-</span><span class="n">S</span> <span class="n">localhost</span> <span class="o">-</span><span class="n">i</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id1">
+<h2>Replicate SQL Server CDC changes to MySql in real-time<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Download and extract kafka</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Install needed packages
+sudo dnf install java-11-openjdk tmux -y
+# Create a directory called kafka and change to this directory
+mkdir ~/kafka
+# Download the Kafka binaries in /home/${kafka_user_name}/Downloads
+curl -s https://downloads.apache.org/kafka/2.5.0/kafka_2.13-2.5.0.tgz | tar -xvzf --strip 1 -C ~/kafka
+# Extract the archive in it
+tar -xvzf ~/Downloads/kafka_2.13-2.5.0.tgz --strip 1 -C ~/kafka
+# Download and extract Debezium SQL Server plugins
+sudo mkdir -p /usr/local/share/kafka/plugins/debezium-connector-sqlserver
+curl -s https://repo1.maven.org/maven2/io/debezium/debezium-connector-sqlserver/1.1.1.Final/debezium-connector-sqlserver-1.1.1.Final-plugin.tar.gz | sudo tar -xvzf -C /usr/local/share/kafka/plugins/debezium-connector-sqlserver
+# Download and extract Debezium MySQL plugins
+sudo mkdir /usr/local/share/kafka/plugins/debezium-connector-mysql
+curl -s https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/1.1.1.Final/debezium-connector-mysql-1.1.1.Final-plugin.tar.gz | sudo tar -xvzf -C /usr/local/share/kafka/plugins/debezium-connector-mysql
+# Add the below jars to CLASSPATH
+export CLASSPATH=$CLASSPATH:/usr/local/share/kafka/plugins/debezium-connector-sqlserver/*
+# export CLASSPATH=$CLASSPATH:/usr/local/share/kafka/plugins/debezium-connector-mysql/*
+export CLASSPATH=$CLASSPATH:$HOME/kafka/libs/*
+</pre></div>
+</div>
+<p>Start Zookeeper</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<p># Start Zookeeper server in a tmux session</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tmux</span> <span class="n">new</span> <span class="o">-</span><span class="n">s</span> <span class="n">zookeeper</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">start</span> <span class="o">-</span><span class="n">d</span>
+<span class="n">tmux</span> <span class="n">send</span><span class="o">-</span><span class="n">keys</span> <span class="s2">&quot;~/kafka/bin/zookeeper-server-start.sh ~/kafka/config/zookeeper.properties&quot;</span> <span class="n">Enter</span>
+</pre></div>
+</div>
+<p>Start Kafka</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start Kafka server in a tmux session</span>
+<span class="n">tmux</span> <span class="n">new</span> <span class="o">-</span><span class="n">s</span> <span class="n">kafka</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">start</span> <span class="o">-</span><span class="n">d</span>
+<span class="n">tmux</span> <span class="n">send</span><span class="o">-</span><span class="n">keys</span> <span class="s2">&quot;~/kafka/bin/kafka-server-start.sh ~/kafka/config/server.properties&quot;</span> <span class="n">Enter</span>
 </pre></div>
 </div>
 <p>Create and fill a table</p>
@@ -255,7 +300,6 @@
 </pre></div>
 </div>
 <p>Or from a script: <code class="docutils literal notranslate"><span class="pre">https://github.com/edent/Open-Source-Shakespeare</span></code></p>
-</div>
 </div>
 </div>
 
