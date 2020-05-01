@@ -90,9 +90,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#commands">Commands</a></li>
-<li><a class="reference internal" href="#test-with-mysql-server">Test with MySQL Server</a></li>
-<li><a class="reference internal" href="#suite">SUITE</a></li>
-<li><a class="reference internal" href="#source">Source</a></li>
+<li><a class="reference internal" href="#ressources">Ressources</a></li>
 </ul>
 </li>
 </ul>
@@ -177,12 +175,16 @@
 </div>
 <p>We have prepared a script to easier your task so that you only have to get it execute with your desired <code class="docutils literal notranslate"><span class="pre">user_name</span></code> and <code class="docutils literal notranslate"><span class="pre">user_pw</span></code></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dnf</span> <span class="n">install</span> <span class="n">wget</span> <span class="o">-</span><span class="n">y</span>
-<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ds4es</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">distributed</span><span class="o">-</span><span class="n">change</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">capture</span><span class="o">/</span><span class="n">_static</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="mi">00</span><span class="n">_user_creation</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ds4es</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">real</span><span class="o">-</span><span class="n">time</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">streaming</span><span class="o">-</span><span class="ow">and</span><span class="o">-</span><span class="n">ingestion</span><span class="o">/</span><span class="n">_static</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="mi">00</span><span class="n">_user_creation</span><span class="o">.</span><span class="n">sh</span>
 <span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="o">./</span><span class="mi">00</span><span class="n">_user_creation</span><span class="o">.</span><span class="n">sh</span>
 <span class="o">./</span><span class="mi">00</span><span class="n">_user_creation</span><span class="o">.</span><span class="n">sh</span> <span class="n">user_name</span> <span class="n">user_pw</span>
 <span class="n">history</span> <span class="o">-</span><span class="n">c</span>
 </pre></div>
 </div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">user_name</span></code> - your Linux user’s username</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">user_pw</span></code> - your Linux user’s password</p></li>
+</ul>
 <p>Press Ctrl+D on Linux to log out as <code class="docutils literal notranslate"><span class="pre">root</span></code> and you will log back in under your newly created user.</p>
 </div>
 <div class="section" id="server-1-setup-a-kafka-broker-and-zookeeper">
@@ -194,11 +196,15 @@
 </div>
 <p>Setup Zookeeper and a Kafka broker</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">~/</span><span class="n">Scripts</span>
-<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ds4es</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">distributed</span><span class="o">-</span><span class="n">change</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">capture</span><span class="o">/</span><span class="n">_static</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="mi">01</span><span class="n">_zookeeper_kafka_broker_installation</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">P</span> <span class="o">~/</span><span class="n">Scripts</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ds4es</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">real</span><span class="o">-</span><span class="n">time</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">streaming</span><span class="o">-</span><span class="ow">and</span><span class="o">-</span><span class="n">ingestion</span><span class="o">/</span><span class="n">_static</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="mi">01</span><span class="n">_zookeeper_kafka_broker_installation</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">P</span> <span class="o">~/</span><span class="n">Scripts</span>
 <span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="o">~/</span><span class="n">Scripts</span><span class="o">/</span><span class="mi">01</span><span class="n">_zookeeper_kafka_broker_installation</span><span class="o">.</span><span class="n">sh</span>
 <span class="o">~/</span><span class="n">Scripts</span><span class="o">/</span><span class="mi">01</span><span class="n">_zookeeper_kafka_broker_installation</span><span class="o">.</span><span class="n">sh</span> <span class="n">broker_ip_address</span> <span class="n">broker_port</span>
 </pre></div>
 </div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">broker_ip_address</span></code> - your Kafka broker public ip address</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">broker_port</span></code> - your Kafka broker port</p></li>
+</ul>
 <p>If everything is working fine, 2 tmux detached sessions should have been started:</p>
 <ul class="simple">
 <li><p>zookeeper-server-start</p></li>
@@ -222,7 +228,7 @@
 </div>
 <p>Setup a Kafka Client</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">~/</span><span class="n">Scripts</span>
-<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ds4es</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">distributed</span><span class="o">-</span><span class="n">change</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">capture</span><span class="o">/</span><span class="n">_static</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="mi">02</span><span class="n">_producer_consumer_instance</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">P</span> <span class="o">~/</span><span class="n">Scripts</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">ds4es</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">real</span><span class="o">-</span><span class="n">time</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">streaming</span><span class="o">-</span><span class="ow">and</span><span class="o">-</span><span class="n">ingestion</span><span class="o">/</span><span class="n">_static</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="mi">02</span><span class="n">_producer_consumer_instance</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">P</span> <span class="o">~/</span><span class="n">Scripts</span>
 <span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="o">~/</span><span class="n">Scripts</span><span class="o">/</span><span class="mi">02</span><span class="n">_producer_consumer_instance</span><span class="o">.</span><span class="n">sh</span>
 <span class="o">~/</span><span class="n">Scripts</span><span class="o">/</span><span class="mi">02</span><span class="n">_producer_consumer_instance</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
@@ -258,10 +264,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">kafka</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">describe</span> <span class="o">--</span><span class="n">topic</span> <span class="n">your_topic_namee</span> <span class="o">--</span><span class="n">zookeeper</span> <span class="n">zookeeper_ip_address</span><span class="p">:</span><span class="n">zookeeper_port</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="test-with-mysql-server">
-<h2>Test with MySQL Server<a class="headerlink" href="#test-with-mysql-server" title="Permalink to this headline">¶</a></h2>
-<p>Retrieve Kafka JDBC Connect and MySQL Connector Jars</p>
+<p>Retrieve connectors</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">url_to</span><span class="o">/</span><span class="n">kafka</span><span class="o">-</span><span class="n">connect</span><span class="o">-</span><span class="n">jdbc</span><span class="o">-</span><span class="mf">5.3</span><span class="o">.</span><span class="mf">1.</span><span class="n">jar</span> <span class="o">-</span><span class="n">P</span> <span class="o">~/</span><span class="n">kafka</span><span class="o">/</span><span class="n">libs</span><span class="o">/</span>
 <span class="n">wget</span> <span class="n">url_to</span><span class="o">/</span><span class="n">mysql</span><span class="o">-</span><span class="n">connector</span><span class="o">-</span><span class="n">java</span><span class="o">-</span><span class="mf">8.0</span><span class="o">.</span><span class="mf">17.</span><span class="n">jar</span> <span class="o">-</span><span class="n">P</span> <span class="o">~/</span><span class="n">kafka</span><span class="o">/</span><span class="n">libs</span><span class="o">/</span>
 </pre></div>
@@ -272,77 +275,16 @@
 <span class="n">tmux</span> <span class="n">send</span><span class="o">-</span><span class="n">keys</span> <span class="s2">&quot;~/kafka/bin/connect-ditributed.sh ~/kafka/config/connect-distributed.properties&quot;</span> <span class="n">Enter</span>
 </pre></div>
 </div>
-<p>Install MySQL Server</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">dnf</span> <span class="n">install</span> <span class="n">mysql</span><span class="o">-</span><span class="n">server</span>
-<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">start</span> <span class="n">mysqld</span>
-<span class="n">sudo</span> <span class="n">systemctl</span> <span class="nb">list</span><span class="o">-</span><span class="n">units</span> <span class="o">|</span> <span class="n">grep</span> <span class="o">-</span><span class="n">E</span> <span class="s1">&#39;mysqld.service&#39;</span>
-</pre></div>
 </div>
-<p>Login to MySQL</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">mysql</span>
-</pre></div>
-</div>
-<p>Create and fill a table</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">DATABASE</span> <span class="k">IF</span> <span class="k">NOT</span> <span class="k">EXISTS</span> <span class="n">movies</span><span class="p">;</span>
-<span class="n">USE</span> <span class="n">movies</span><span class="p">;</span>
-
-<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Members</span> <span class="p">(</span>
-  <span class="n">membership_number</span> <span class="nb">INT</span> <span class="n">AUTO_INCREMENT</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
-  <span class="n">full_names</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="p">,</span>
-  <span class="n">gender</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="p">,</span>
-  <span class="n">date_of_birth</span> <span class="nb">DATE</span> <span class="p">,</span>
-  <span class="n">physical_address</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="p">,</span>
-  <span class="n">postal_address</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="p">,</span>
-  <span class="n">contact_number</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">75</span><span class="p">)</span> <span class="p">,</span>
-  <span class="n">email</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
-  <span class="n">modified</span> <span class="k">TIMESTAMP</span> <span class="k">DEFAULT</span> <span class="k">CURRENT_TIMESTAMP</span>
-<span class="p">);</span>
-
-
-<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span><span class="p">(</span><span class="n">full_names</span><span class="p">,</span><span class="n">gender</span><span class="p">,</span><span class="n">physical_address</span><span class="p">,</span><span class="n">contact_number</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;Leonard Hofstadter&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;Woodcrest&#39;</span><span class="p">,</span><span class="s1">&#39;0845738767&#39;</span><span class="p">);</span>
-
-<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span><span class="p">(</span><span class="n">full_names</span><span class="p">,</span><span class="n">gender</span><span class="p">,</span><span class="n">physical_address</span><span class="p">,</span><span class="n">contact_number</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;Sheldon Cooper&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;Woodcrest&#39;</span><span class="p">,</span> <span class="s1">&#39;0976736763&#39;</span><span class="p">);</span>
-
-<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span><span class="p">(</span><span class="n">full_names</span><span class="p">,</span><span class="n">gender</span><span class="p">,</span><span class="n">physical_address</span><span class="p">,</span><span class="n">contact_number</span><span class="p">)</span><span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;0938867763&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;Rajesh Koothrappali&#39;</span><span class="p">,</span><span class="s1">&#39;Woodcrest&#39;</span><span class="p">);</span>
-
-<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span><span class="p">(</span><span class="n">full_names</span><span class="p">,</span><span class="n">date_of_birth</span><span class="p">,</span><span class="n">gender</span><span class="p">,</span><span class="n">physical_address</span><span class="p">,</span><span class="n">contact_number</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;Leslie Winkle&#39;</span><span class="p">,</span><span class="s1">&#39;1984-02-14&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;Woodcrest&#39;</span><span class="p">,</span> <span class="s1">&#39;0987636553&#39;</span><span class="p">);</span>
-
-<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="s1">&#39;Howard Wolowitz&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;1981-08-24&#39;</span><span class="p">,</span><span class="s1">&#39;SouthPark&#39;</span><span class="p">,</span><span class="s1">&#39;P.O. Box 4563&#39;</span><span class="p">,</span> <span class="s1">&#39;0987786553&#39;</span><span class="p">,</span> <span class="s1">&#39;lwolowitz[at]email.me&#39;</span><span class="p">,</span> <span class="k">CURRENT_TIMESTAMP</span><span class="p">);</span>
-
-<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">Members</span><span class="p">;</span>
-</pre></div>
-</div>
-<p>Launch jdbc source connector</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="o">--</span><span class="n">data</span> <span class="s1">&#39;{</span>
-        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;jdbc-source-connector&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;connector.class&quot;</span><span class="p">:</span> <span class="s2">&quot;io.confluent.connect.jdbc.JdbcSourceConnector&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;tasks.max&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-        <span class="s2">&quot;connection.url&quot;</span><span class="p">:</span> <span class="s2">&quot;jdbc:mysql://localhost:3306/movies&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;connection.user&quot;</span><span class="p">:</span> <span class="s2">&quot;xxxxxx&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;connection.password&quot;</span><span class="p">:</span> <span class="s2">&quot;xxxxxx&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;incrementing&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;table.whitelist&quot;</span><span class="p">:</span> <span class="s2">&quot;Members&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;incrementing.column.name&quot;</span><span class="p">:</span> <span class="s2">&quot;membership_number&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;timestamp.column.name&quot;</span><span class="p">:</span> <span class="s2">&quot;modified&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;poll.interval.ms&quot;</span><span class="p">:</span> <span class="mi">1000</span>
-        <span class="p">}</span>
-<span class="p">}</span><span class="s1">&#39; http://xxx.xxx.xxx.xxx:8083/connectors</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="suite">
-<h2>SUITE<a class="headerlink" href="#suite" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="ressources">
+<h2>Ressources<a class="headerlink" href="#ressources" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>[Streaming data from PostgreSQL to Kafka using Debezium](<a class="reference external" href="https://medium.com/&#64;tilakpatidar/streaming-data-from-postgresql-to-kafka-using-debezium-a14a2644906d">https://medium.com/&#64;tilakpatidar/streaming-data-from-postgresql-to-kafka-using-debezium-a14a2644906d</a>)</p></li>
-<li><p><a class="reference external" href="https://kafka.apache.org/documentation.html#connect_running">https://kafka.apache.org/documentation.html#connect_running</a></p></li>
-<li><p><a class="reference external" href="https://debezium.io/documentation/reference/install.html">https://debezium.io/documentation/reference/install.html</a></p></li>
-</ul>
-</div>
-<div class="section" id="source">
-<h2>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p><a class="reference external" href="https://dzone.com/articles/kafka-producer-and-consumer-example">https://dzone.com/articles/kafka-producer-and-consumer-example</a></p></li>
+<li><p>[Excellent debezium tutorial](<a class="reference external" href="https://debezium.io/documentation/reference/tutorial.html">https://debezium.io/documentation/reference/tutorial.html</a>)</p></li>
+<li><p>[Overview of Docker Compose](<a class="reference external" href="https://docs.docker.com/compose/">https://docs.docker.com/compose/</a>)</p></li>
+<li><p>[debezium-examples repo on GitHub](<a class="reference external" href="https://github.com/debezium/debezium-examples/tree/master/tutorial#using-sql-server">https://github.com/debezium/debezium-examples/tree/master/tutorial#using-sql-server</a>)</p></li>
+<li><p>[Querying Debezium Change Data Events With KSQL](<a class="reference external" href="https://debezium.io/blog/2018/05/24/querying-debezium-change-data-eEvents-with-ksql/">https://debezium.io/blog/2018/05/24/querying-debezium-change-data-eEvents-with-ksql/</a>)</p></li>
+<li><p>[Using Debezium With the Apicurio API and Schema Registry](<a class="reference external" href="https://debezium.io/blog/2020/04/09/using-debezium-wit-apicurio-api-schema-registry/">https://debezium.io/blog/2020/04/09/using-debezium-wit-apicurio-api-schema-registry/</a>)</p></li>
+<li><p>[Running Kafka in Production](<a class="reference external" href="https://docs.confluent.io/current/kafka/deployment.html">https://docs.confluent.io/current/kafka/deployment.html</a>)</p></li>
 </ul>
 </div>
 </div>

@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Replicate SQL Server CDC changes to MySql in real-time &mdash; Distributed change data capture 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/js/custom.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Distributed change data capture
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Replicate SQL Server CDC changes to MySql in real-time</a><ul>
+<li><a class="reference internal" href="#installing-mysql-on-centos-8-rhel-8">Installing MySQL on CentOS 8 / RHEL 8</a></li>
+<li><a class="reference internal" href="#installing-microsoft-sql-server-2019-on-centos-8-rhel-8">Installing Microsoft SQL Server 2019 on CentOS 8 / RHEL 8</a><ul>
+<li><a class="reference internal" href="#enable-remote-access-optional">Enable remote access (optional)</a></li>
+<li><a class="reference internal" href="#test-sql-server">Test SQL Server</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Distributed change data capture</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Replicate SQL Server CDC changes to MySql in real-time</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/mysql.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="replicate-sql-server-cdc-changes-to-mysql-in-real-time">
+<h1>Replicate SQL Server CDC changes to MySql in real-time<a class="headerlink" href="#replicate-sql-server-cdc-changes-to-mysql-in-real-time" title="Permalink to this headline">¶</a></h1>
+<p>Source: <a class="reference external" href="https://medium.com/&#64;gvsbharish/real-time-sql-server-cdc-changes-to-mysql-using-debezium-kafka-connect-without-docker-1317804efe59">https://medium.com/&#64;gvsbharish/real-time-sql-server-cdc-changes-to-mysql-using-debezium-kafka-connect-without-docker-1317804efe59</a></p>
+<div class="section" id="installing-mysql-on-centos-8-rhel-8">
+<h2>Installing MySQL on CentOS 8 / RHEL 8<a class="headerlink" href="#installing-mysql-on-centos-8-rhel-8" title="Permalink to this headline">¶</a></h2>
+<p>Install MySQL Server</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">dnf</span> <span class="n">install</span> <span class="n">mysql</span><span class="o">-</span><span class="n">server</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">start</span> <span class="n">mysqld</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="nb">list</span><span class="o">-</span><span class="n">units</span> <span class="o">|</span> <span class="n">grep</span> <span class="o">-</span><span class="n">E</span> <span class="s1">&#39;mysqld.service&#39;</span>
+</pre></div>
+</div>
+<p>To login to MySQL</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">mysql</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-microsoft-sql-server-2019-on-centos-8-rhel-8">
+<h2>Installing Microsoft SQL Server 2019 on CentOS 8 / RHEL 8<a class="headerlink" href="#installing-microsoft-sql-server-2019-on-centos-8-rhel-8" title="Permalink to this headline">¶</a></h2>
+<p>Source: <a class="reference external" href="https://computingforgeeks.com/how-to-install-microsoft-sql-server-on-rhel-centos/">https://computingforgeeks.com/how-to-install-microsoft-sql-server-on-rhel-centos/</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add the Microsoft SQL Server 2019 repository</span>
+<span class="n">sudo</span> <span class="n">curl</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">packages</span><span class="o">.</span><span class="n">microsoft</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">rhel</span><span class="o">/</span><span class="mi">8</span><span class="o">/</span><span class="n">mssql</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="mf">2019.</span><span class="n">repo</span> <span class="o">-</span><span class="n">o</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">yum</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">mssql</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="mf">2019.</span><span class="n">repo</span>
+<span class="n">sudo</span>  <span class="n">curl</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">packages</span><span class="o">.</span><span class="n">microsoft</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">rhel</span><span class="o">/</span><span class="mi">8</span><span class="o">/</span><span class="n">prod</span><span class="o">.</span><span class="n">repo</span> <span class="o">-</span><span class="n">o</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">yum</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">msprod</span><span class="o">.</span><span class="n">repo</span>
+<span class="c1"># Install MS SQL server</span>
+<span class="n">sudo</span> <span class="n">dnf</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">mssql</span><span class="o">-</span><span class="n">server</span>
+<span class="c1"># Install SQL Server command-line tools</span>
+<span class="n">sudo</span> <span class="n">yum</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">mssql</span><span class="o">-</span><span class="n">tools</span> <span class="n">unixODBC</span><span class="o">-</span><span class="n">devel</span>
+<span class="c1"># Confirm installation</span>
+<span class="n">rpm</span> <span class="o">-</span><span class="n">qi</span> <span class="n">mssql</span><span class="o">-</span><span class="n">server</span>
+<span class="c1"># Initialize MS SQL Database Engine</span>
+<span class="n">sudo</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">mssql</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">mssql</span><span class="o">-</span><span class="n">conf</span> <span class="n">setup</span>
+<span class="c1"># Add /opt/mssql/bin/ to your $PATH variable</span>
+<span class="n">echo</span> <span class="s1">&#39;export PATH=$PATH:/opt/mssql/bin:/opt/mssql-tools/bin&#39;</span> <span class="o">|</span> <span class="n">sudo</span> <span class="n">tee</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">profile</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">mssql</span><span class="o">.</span><span class="n">sh</span>
+<span class="c1"># Source the file to start MS SQL</span>
+<span class="n">source</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">profile</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">mssql</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<div class="section" id="enable-remote-access-optional">
+<h3>Enable remote access (optional)<a class="headerlink" href="#enable-remote-access-optional" title="Permalink to this headline">¶</a></h3>
+<p>If you have an active Firewalld service, allow SQL Server ports for remote hosts to connect:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span>  <span class="n">firewall</span><span class="o">-</span><span class="n">cmd</span> <span class="o">--</span><span class="n">add</span><span class="o">-</span><span class="n">port</span><span class="o">=</span><span class="mi">1433</span><span class="o">/</span><span class="n">tcp</span> <span class="o">--</span><span class="n">permanent</span>
+<span class="n">sudo</span> <span class="n">firewall</span><span class="o">-</span><span class="n">cmd</span> <span class="o">--</span><span class="n">reload</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="test-sql-server">
+<h3>Test SQL Server<a class="headerlink" href="#test-sql-server" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Connect to the SQL Server</span>
+<span class="n">sqlcmd</span> <span class="o">-</span><span class="n">S</span> <span class="n">localhost</span> <span class="o">-</span><span class="n">U</span> <span class="n">SA</span>
+<span class="c1"># Show Database users</span>
+<span class="n">select</span> <span class="n">name</span> <span class="kn">from</span> <span class="nn">sysusers</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Create and fill a table</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">DATABASE</span> <span class="k">IF</span> <span class="k">NOT</span> <span class="k">EXISTS</span> <span class="n">movies</span><span class="p">;</span>
+<span class="n">USE</span> <span class="n">movies</span><span class="p">;</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">Members</span> <span class="p">(</span>
+  <span class="n">membership_number</span> <span class="nb">INT</span> <span class="n">AUTO_INCREMENT</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
+  <span class="n">full_names</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="p">,</span>
+  <span class="n">gender</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="p">,</span>
+  <span class="n">date_of_birth</span> <span class="nb">DATE</span> <span class="p">,</span>
+  <span class="n">physical_address</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="p">,</span>
+  <span class="n">postal_address</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="p">,</span>
+  <span class="n">contact_number</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">75</span><span class="p">)</span> <span class="p">,</span>
+  <span class="n">email</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span>
+  <span class="n">modified</span> <span class="k">TIMESTAMP</span> <span class="k">DEFAULT</span> <span class="k">CURRENT_TIMESTAMP</span>
+<span class="p">);</span>
+
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span><span class="p">(</span><span class="n">full_names</span><span class="p">,</span><span class="n">gender</span><span class="p">,</span><span class="n">physical_address</span><span class="p">,</span><span class="n">contact_number</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;Leonard Hofstadter&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;Woodcrest&#39;</span><span class="p">,</span><span class="s1">&#39;0845738767&#39;</span><span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span><span class="p">(</span><span class="n">full_names</span><span class="p">,</span><span class="n">gender</span><span class="p">,</span><span class="n">physical_address</span><span class="p">,</span><span class="n">contact_number</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;Sheldon Cooper&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;Woodcrest&#39;</span><span class="p">,</span> <span class="s1">&#39;0976736763&#39;</span><span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span><span class="p">(</span><span class="n">full_names</span><span class="p">,</span><span class="n">gender</span><span class="p">,</span><span class="n">physical_address</span><span class="p">,</span><span class="n">contact_number</span><span class="p">)</span><span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;0938867763&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;Rajesh Koothrappali&#39;</span><span class="p">,</span><span class="s1">&#39;Woodcrest&#39;</span><span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span><span class="p">(</span><span class="n">full_names</span><span class="p">,</span><span class="n">date_of_birth</span><span class="p">,</span><span class="n">gender</span><span class="p">,</span><span class="n">physical_address</span><span class="p">,</span><span class="n">contact_number</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">&#39;Leslie Winkle&#39;</span><span class="p">,</span><span class="s1">&#39;1984-02-14&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;Woodcrest&#39;</span><span class="p">,</span> <span class="s1">&#39;0987636553&#39;</span><span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">Members</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="s1">&#39;Howard Wolowitz&#39;</span><span class="p">,</span><span class="s1">&#39;Male&#39;</span><span class="p">,</span><span class="s1">&#39;1981-08-24&#39;</span><span class="p">,</span><span class="s1">&#39;SouthPark&#39;</span><span class="p">,</span><span class="s1">&#39;P.O. Box 4563&#39;</span><span class="p">,</span> <span class="s1">&#39;0987786553&#39;</span><span class="p">,</span> <span class="s1">&#39;lwolowitz[at]email.me&#39;</span><span class="p">,</span> <span class="k">CURRENT_TIMESTAMP</span><span class="p">);</span>
+
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">Members</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Launch jdbc source connector</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">H</span> <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="o">--</span><span class="n">data</span> <span class="s1">&#39;{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;jdbc-source-connector&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;connector.class&quot;</span><span class="p">:</span> <span class="s2">&quot;io.confluent.connect.jdbc.JdbcSourceConnector&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tasks.max&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;connection.url&quot;</span><span class="p">:</span> <span class="s2">&quot;jdbc:mysql://localhost:3306/movies&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;connection.user&quot;</span><span class="p">:</span> <span class="s2">&quot;xxxxxx&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;connection.password&quot;</span><span class="p">:</span> <span class="s2">&quot;xxxxxx&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;incrementing&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;table.whitelist&quot;</span><span class="p">:</span> <span class="s2">&quot;Members&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;incrementing.column.name&quot;</span><span class="p">:</span> <span class="s2">&quot;membership_number&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;timestamp.column.name&quot;</span><span class="p">:</span> <span class="s2">&quot;modified&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;poll.interval.ms&quot;</span><span class="p">:</span> <span class="mi">1000</span>
+        <span class="p">}</span>
+<span class="p">}</span><span class="s1">&#39; http://xxx.xxx.xxx.xxx:8083/connectors</span>
+</pre></div>
+</div>
+<p>Or from a script: <code class="docutils literal notranslate"><span class="pre">https://github.com/edent/Open-Source-Shakespeare</span></code></p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, ds4es
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

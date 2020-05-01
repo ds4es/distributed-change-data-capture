@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Up and running PostgreSQL replication with Debezium! &mdash; Distributed change data capture 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/js/custom.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Distributed change data capture
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Up and running PostgreSQL replication with Debezium!</a><ul>
+<li><a class="reference internal" href="#installing-postgresql-on-centos-8">Installing PostgreSQL on CentOS 8</a><ul>
+<li><a class="reference internal" href="#change-postgresql-database-encoding-to-utf8">Change PostgreSQL database encoding to UTF8</a></li>
+<li><a class="reference internal" href="#enable-remote-access-optional">Enable remote access (optional)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#load-data">Load data</a></li>
+<li><a class="reference internal" href="#setup-the-connector">Setup the connector</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Distributed change data capture</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Up and running PostgreSQL replication with Debezium!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/postgresql.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="up-and-running-postgresql-replication-with-debezium">
+<h1>Up and running PostgreSQL replication with Debezium!<a class="headerlink" href="#up-and-running-postgresql-replication-with-debezium" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installing-postgresql-on-centos-8">
+<h2>Installing PostgreSQL on CentOS 8<a class="headerlink" href="#installing-postgresql-on-centos-8" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add PostgreSQL Repository</span>
+<span class="n">sudo</span> <span class="n">yum</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">postgresql</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">pub</span><span class="o">/</span><span class="n">repos</span><span class="o">/</span><span class="n">yum</span><span class="o">/</span><span class="n">reporpms</span><span class="o">/</span><span class="n">EL</span><span class="o">-</span><span class="mi">8</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">pgdg</span><span class="o">-</span><span class="n">redhat</span><span class="o">-</span><span class="n">repo</span><span class="o">-</span><span class="n">latest</span><span class="o">.</span><span class="n">noarch</span><span class="o">.</span><span class="n">rpm</span>
+<span class="c1"># Disable the built-in PostgreSQL module</span>
+<span class="n">sudo</span> <span class="n">dnf</span> <span class="o">-</span><span class="n">qy</span> <span class="n">module</span> <span class="n">disable</span> <span class="n">postgresql</span>
+<span class="c1"># Install both client and server packages</span>
+<span class="n">sudo</span> <span class="n">dnf</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">postgresql12</span> <span class="n">postgresql12</span><span class="o">-</span><span class="n">server</span>
+<span class="c1"># Initialize and start database service</span>
+<span class="n">sudo</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">pgsql</span><span class="o">-</span><span class="mi">12</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">postgresql</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="n">setup</span> <span class="n">initdb</span>
+<span class="c1"># Start and enable the database server service.</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">enable</span> <span class="o">--</span><span class="n">now</span> <span class="n">postgresql</span><span class="o">-</span><span class="mi">12</span>
+</pre></div>
+</div>
+<p>Set PostgreSQL admin user’s password</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">su</span> <span class="o">-</span> <span class="n">postgres</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;psql -c &quot;alter user postgres with password &#39;</span>\<span class="s1">&#39;&#39;</span><span class="n">my_strong_password</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="s2">&quot;&#39;</span>
+</pre></div>
+</div>
+<p>Restart database service after committing the change.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">restart</span> <span class="n">postgresql</span><span class="o">-</span><span class="mi">12</span>
+</pre></div>
+</div>
+<div class="section" id="change-postgresql-database-encoding-to-utf8">
+<h3>Change PostgreSQL database encoding to UTF8<a class="headerlink" href="#change-postgresql-database-encoding-to-utf8" title="Permalink to this headline">¶</a></h3>
+<p>Check the database default encoding</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">su</span> <span class="o">-</span> <span class="n">postgres</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;psql postgres -c &quot;SHOW SERVER_ENCODING&quot;&#39;</span>
+</pre></div>
+</div>
+<p>If UTF8 is not the default database encoding</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">su</span> <span class="o">-</span> <span class="n">postgres</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;psql -c &quot;UPDATE pg_database SET datistemplate=FALSE WHERE datname=&#39;</span>\<span class="s1">&#39;&#39;</span><span class="n">template1</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="s2">&quot;&#39;;</span>
+
+<span class="n">sudo</span> <span class="n">su</span> <span class="o">-</span> <span class="n">postgres</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;psql -c &quot;DROP DATABASE template1&quot;&#39;</span><span class="p">;</span>
+
+<span class="n">sudo</span> <span class="n">su</span> <span class="o">-</span> <span class="n">postgres</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;psql -c &quot;CREATE DATABASE template1 WITH owner=postgres template=template0 encoding=&#39;</span>\<span class="s1">&#39;&#39;</span><span class="n">UTF8</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="s2">&quot;&#39;;</span>
+
+<span class="n">sudo</span> <span class="n">su</span> <span class="o">-</span> <span class="n">postgres</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;psql -c &quot;UPDATE pg_database SET datistemplate=TRUE WHERE datname=&#39;</span>\<span class="s1">&#39;&#39;</span><span class="n">template1</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="s2">&quot;&#39;;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="enable-remote-access-optional">
+<h3>Enable remote access (optional)<a class="headerlink" href="#enable-remote-access-optional" title="Permalink to this headline">¶</a></h3>
+<p>First if you have a running Firewall service allow PostgreSQL service.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">firewall</span><span class="o">-</span><span class="n">cmd</span> <span class="o">--</span><span class="n">add</span><span class="o">-</span><span class="n">service</span><span class="o">=</span><span class="n">postgresql</span> <span class="o">--</span><span class="n">permanent</span>
+<span class="n">sudo</span> <span class="n">firewall</span><span class="o">-</span><span class="n">cmd</span> <span class="o">--</span><span class="n">reload</span>
+</pre></div>
+</div>
+<p>Edit the file <code class="docutils literal notranslate"><span class="pre">/var/lib/pgsql/12/data/postgresql.conf</span></code> and set Listen address to your server IP address or <code class="docutils literal notranslate"><span class="pre">*</span></code> for all interfaces.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">listen_addresses</span> <span class="o">=</span> <span class="s1">&#39;192.168.10.10&#39;</span>
+</pre></div>
+</div>
+<p>Also set PostgreSQL to accept remote connections in <code class="docutils literal notranslate"><span class="pre">/var/lib/pgsql/12/data/pg_hba.conf</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Accept from anywhere</span>
+<span class="c1"># host all all 0.0.0.0/0 md5</span>
+
+<span class="c1"># Accept from trusted subnet</span>
+<span class="n">host</span> <span class="nb">all</span> <span class="nb">all</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">18.0</span><span class="o">/</span><span class="mi">24</span> <span class="n">md5</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="load-data">
+<h2>Load data<a class="headerlink" href="#load-data" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">su</span> <span class="o">-</span> <span class="n">postgres</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;createdb shakespeare&#39;</span>
+<span class="n">curl</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">catherinedevlin</span><span class="o">/</span><span class="n">opensourceshakespeare</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">shakespeare</span><span class="o">.</span><span class="n">sql</span> <span class="o">|</span> <span class="n">sudo</span> <span class="n">su</span> <span class="o">-</span> <span class="n">postgres</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;psql shakespeare&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="setup-the-connector">
+<h2>Setup the connector<a class="headerlink" href="#setup-the-connector" title="Permalink to this headline">¶</a></h2>
+<p># Create a directory where to store connectors
+sudo mkdir -p /usr/local/share/kafka/plugins
+# Place your needed connectors in it
+curl -s <a class="reference external" href="https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/1.1.1.Final/debezium-connector-postgres-1.1.1.Final-plugin.tar.gz">https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/1.1.1.Final/debezium-connector-postgres-1.1.1.Final-plugin.tar.gz</a> | sudo tar xvz -C /usr/local/share/kafka/plugins/debezium-connector-postgresql
+# Declare this path in your worker configuration file
+echo ‘
+plugin.path=/opt/connectors
+‘ | tee -a ~/kafka/config/connect-distributed.properties
+# Restart your Kafka Connect process to pick up the new JARs
+~/kafka/bin/connect-ditributed.sh ~/kafka/config/connect-distributed.properties
+# export CLASSPATH=$CLASSPATH:/usr/local/share/kafka/plugins/debezium-connector-postgresql/*</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, ds4es
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
