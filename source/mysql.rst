@@ -2,6 +2,8 @@ Replicate SQL Server CDC changes to MySql in real-time
 ======================================================
 Source: https://medium.com/@gvsbharish/real-time-sql-server-cdc-changes-to-mysql-using-debezium-kafka-connect-without-docker-1317804efe59
 
+**Requirements:** A minimum of 3GB RAM for SQL Server
+
 Installing MySQL on CentOS 8 / RHEL 8
 -------------------------------------
 
@@ -9,7 +11,7 @@ Install MySQL Server
 
 .. code-block:: default
 
-	sudo dnf install mysql-server
+	sudo dnf install mysql-server -y
 	sudo systemctl start mysqld
 	sudo systemctl list-units | grep -E 'mysqld.service'
 
@@ -28,11 +30,11 @@ Source: https://computingforgeeks.com/how-to-install-microsoft-sql-server-on-rhe
 
 	# Add the Microsoft SQL Server 2019 repository 
 	sudo curl https://packages.microsoft.com/config/rhel/8/mssql-server-2019.repo -o /etc/yum.repos.d/mssql-server-2019.repo 
-	sudo  curl https://packages.microsoft.com/config/rhel/8/prod.repo -o /etc/yum.repos.d/msprod.repo
+	sudo curl https://packages.microsoft.com/config/rhel/8/prod.repo -o /etc/yum.repos.d/msprod.repo
 	# Install MS SQL server
-	sudo dnf -y install mssql-server
+	sudo dnf install mssql-server -y 
 	# Install SQL Server command-line tools
-	sudo yum -y install mssql-tools unixODBC-devel
+	sudo dnf install mssql-tools unixODBC-devel -y 
 	# Confirm installation
 	rpm -qi mssql-server
 	# Initialize MS SQL Database Engine
@@ -62,9 +64,58 @@ Test SQL Server
 	sqlcmd -S localhost -U SA
 	# Show Database users
 	select name from sysusers;
+	go
+
+	curl -s https://ds4es.org/real-time-data-streaming-and-ingestion/_static/scripts/sql/bike_stores_sample_database.sql | sqlcmd -S localhost -i
 
 
+Replicate SQL Server CDC changes to MySql in real-time
+------------------------------------------------------
 
+Download and extract kafka
+
+.. code-block:: default
+
+	# Install needed packages
+	sudo dnf install java-11-openjdk tmux -y
+	# Create a directory called kafka and change to this directory
+	mkdir ~/kafka
+	# Download the Kafka binaries in /home/${kafka_user_name}/Downloads
+	curl -s https://downloads.apache.org/kafka/2.5.0/kafka_2.13-2.5.0.tgz | tar -xvzf --strip 1 -C ~/kafka
+	# Extract the archive in it
+	tar -xvzf ~/Downloads/kafka_2.13-2.5.0.tgz --strip 1 -C ~/kafka
+	# Download and extract Debezium SQL Server plugins
+	sudo mkdir -p /usr/local/share/kafka/plugins/debezium-connector-sqlserver
+	curl -s https://repo1.maven.org/maven2/io/debezium/debezium-connector-sqlserver/1.1.1.Final/debezium-connector-sqlserver-1.1.1.Final-plugin.tar.gz | sudo tar -xvzf -C /usr/local/share/kafka/plugins/debezium-connector-sqlserver
+	# Download and extract Debezium MySQL plugins
+	sudo mkdir /usr/local/share/kafka/plugins/debezium-connector-mysql
+	curl -s https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/1.1.1.Final/debezium-connector-mysql-1.1.1.Final-plugin.tar.gz | sudo tar -xvzf -C /usr/local/share/kafka/plugins/debezium-connector-mysql
+	# Add the below jars to CLASSPATH
+	export CLASSPATH=$CLASSPATH:/usr/local/share/kafka/plugins/debezium-connector-sqlserver/*
+	# export CLASSPATH=$CLASSPATH:/usr/local/share/kafka/plugins/debezium-connector-mysql/*
+	export CLASSPATH=$CLASSPATH:$HOME/kafka/libs/*
+
+
+Start Zookeeper
+
+.. code-block:: default
+
+
+# Start Zookeeper server in a tmux session
+	
+.. code-block:: default
+
+	tmux new -s zookeeper-server-start -d
+	tmux send-keys "~/kafka/bin/zookeeper-server-start.sh ~/kafka/config/zookeeper.properties" Enter
+
+
+Start Kafka
+
+.. code-block:: default
+	
+	# Start Kafka server in a tmux session
+	tmux new -s kafka-server-start -d
+	tmux send-keys "~/kafka/bin/kafka-server-start.sh ~/kafka/config/server.properties" Enter
 
 
 
