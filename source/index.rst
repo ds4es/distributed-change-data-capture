@@ -175,9 +175,9 @@ Start a Connector
 References
 ----------
 
-* [Excellent debezium tutorial](https://debezium.io/documentation/reference/tutorial.html)
-* [Overview of Docker Compose](https://docs.docker.com/compose/)
-* [debezium-examples repo on GitHub](https://github.com/debezium/debezium-examples/tree/master/tutorial#using-sql-server)
-* [Querying Debezium Change Data Events With KSQL](https://debezium.io/blog/2018/05/24/querying-debezium-change-data-eEvents-with-ksql/)
-* [Using Debezium With the Apicurio API and Schema Registry](https://debezium.io/blog/2020/04/09/using-debezium-wit-apicurio-api-schema-registry/)
-* [Running Kafka in Production](https://docs.confluent.io/current/kafka/deployment.html)
+* `Excellent debezium tutorial <https://debezium.io/documentation/reference/tutorial.html>`_
+* `Overview of Docker Compose <https://docs.docker.com/compose/>`_
+* `debezium-examples repo on GitHub <https://github.com/debezium/debezium-examples/tree/master/tutorial#using-sql-server>`_
+* `Querying Debezium Change Data Events With KSQL <https://debezium.io/blog/2018/05/24/querying-debezium-change-data-eEvents-with-ksql/>`_
+* `Using Debezium With the Apicurio API and Schema Registry <https://debezium.io/blog/2020/04/09/using-debezium-wit-apicurio-api-schema-registry/>`_
+* `Running Kafka in Production <https://docs.confluent.io/current/kafka/deployment.html>`_
