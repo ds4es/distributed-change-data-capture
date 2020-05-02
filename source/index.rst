@@ -8,7 +8,9 @@ Welcome to A Working Apache Kafka Message Queue's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :hidden:
+
+   sqlserver-mysql
 
 
 For the following instructions you will need 2 servers. Those instructions are for RHEL 8 / CentOS 8 ditributions and has been tested on DigitalOcean.
@@ -60,10 +62,10 @@ Setup Zookeeper and a Kafka broker
 
 .. code-block:: default
 
-	mkdir -p ~/Scripts
-	wget https://ds4es.org/real-time-data-streaming-and-ingestion/_static/scripts/01_zookeeper_kafka_broker_installation.sh -P ~/Scripts
-	chmod +x ~/Scripts/01_zookeeper_kafka_broker_installation.sh  
-	~/Scripts/01_zookeeper_kafka_broker_installation.sh broker_ip_address broker_port
+	mkdir -p ~/scripts
+	wget https://ds4es.org/real-time-data-streaming-and-ingestion/_static/scripts/01_zookeeper_kafka_broker_installation.sh -P ~/scripts
+	chmod +x ~/scripts/01_zookeeper_kafka_broker_installation.sh  
+	~/scripts/01_zookeeper_kafka_broker_installation.sh broker_ip_address broker_port
 
 * ``broker_ip_address`` - your Kafka broker public ip address 
 * ``broker_port`` - your Kafka broker port
@@ -74,8 +76,14 @@ If everything is working fine, 2 tmux detached sessions should have been started
 * kafka-server-start
 
 You can access 2 those tmux sessions respectively with:
-* ``tmux attach-session -t zookeeper-server-start``
-* ``tmux attach-session -t kafka-server-start``
+
+.. code-block:: default
+
+	tmux attach-session -t zookeeper-server-start
+
+.. code-block:: default
+
+	tmux attach-session -t kafka-server-start
 
 (Ctrl+B, D to detach from the current tmux session)
 
@@ -98,10 +106,10 @@ Setup a Kafka Client
 
 .. code-block:: default
 
-	mkdir -p ~/Scripts
-	wget https://ds4es.org/real-time-data-streaming-and-ingestion/_static/scripts/02_producer_consumer_instance.sh -P ~/Scripts
-	chmod +x ~/Scripts/02_producer_consumer_instance.sh  
-	~/Scripts/02_producer_consumer_instance.sh
+	mkdir -p ~/scripts
+	wget https://ds4es.org/real-time-data-streaming-and-ingestion/_static/scripts/02_producer_consumer_instance.sh -P ~/scripts
+	chmod +x ~/scripts/02_producer_consumer_instance.sh  
+	~/scripts/02_producer_consumer_instance.sh
 
 Start a Kafka producer
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -154,7 +162,8 @@ Retrieve connectors
 
 Start or restart Kafka server and Zookeeper server
 
-Start Connector
+Start a Connector
+^^^^^^^^^^^^^^^^^
 
 .. code-block:: default
 

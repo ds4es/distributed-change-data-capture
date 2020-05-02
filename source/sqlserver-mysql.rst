@@ -65,8 +65,12 @@ Test SQL Server
 	# Show Database users
 	select name from sysusers;
 	go
-
-	curl -s https://ds4es.org/real-time-data-streaming-and-ingestion/_static/scripts/sql/bike_stores_sample_database.sql | sqlcmd -S localhost -i
+	# Download a database script
+	mkdir ~/Downloads
+	curl -s https://ds4es.org/real-time-data-streaming-and-ingestion/_static/scripts/sql/bike_stores_sample_database.sql -o ~/Downloads
+	# Execute
+	sqlcmd -S 127.0.0.1 -U SA -P password -Q "CREATE DATABASE BikeStores"
+	sqlcmd -S 127.0.0.1 -U SA -P password -d BikeStores -i ~/Downloads/bike_stores_sample_database.sql
 
 
 Replicate SQL Server CDC changes to MySql in real-time
@@ -80,16 +84,14 @@ Download and extract kafka
 	sudo dnf install java-11-openjdk tmux -y
 	# Create a directory called kafka and change to this directory
 	mkdir ~/kafka
-	# Download the Kafka binaries in /home/${kafka_user_name}/Downloads
-	curl -s https://downloads.apache.org/kafka/2.5.0/kafka_2.13-2.5.0.tgz | tar -xvzf --strip 1 -C ~/kafka
-	# Extract the archive in it
-	tar -xvzf ~/Downloads/kafka_2.13-2.5.0.tgz --strip 1 -C ~/kafka
+	# Download and extract the Kafka binaries in /home/${kafka_user_name}/kafka
+	curl -s https://downloads.apache.org/kafka/2.5.0/kafka_2.13-2.5.0.tgz | tar -xvz --strip 1 -C ~/kafka
 	# Download and extract Debezium SQL Server plugins
 	sudo mkdir -p /usr/local/share/kafka/plugins/debezium-connector-sqlserver
-	curl -s https://repo1.maven.org/maven2/io/debezium/debezium-connector-sqlserver/1.1.1.Final/debezium-connector-sqlserver-1.1.1.Final-plugin.tar.gz | sudo tar -xvzf -C /usr/local/share/kafka/plugins/debezium-connector-sqlserver
+	curl -s https://repo1.maven.org/maven2/io/debezium/debezium-connector-sqlserver/1.1.1.Final/debezium-connector-sqlserver-1.1.1.Final-plugin.tar.gz | sudo tar -xvz -C /usr/local/share/kafka/plugins/debezium-connector-sqlserver
 	# Download and extract Debezium MySQL plugins
 	sudo mkdir /usr/local/share/kafka/plugins/debezium-connector-mysql
-	curl -s https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/1.1.1.Final/debezium-connector-mysql-1.1.1.Final-plugin.tar.gz | sudo tar -xvzf -C /usr/local/share/kafka/plugins/debezium-connector-mysql
+	curl -s https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/1.1.1.Final/debezium-connector-mysql-1.1.1.Final-plugin.tar.gz | sudo tar -xvz -C /usr/local/share/kafka/plugins/debezium-connector-mysql
 	# Add the below jars to CLASSPATH
 	export CLASSPATH=$CLASSPATH:/usr/local/share/kafka/plugins/debezium-connector-sqlserver/*
 	# export CLASSPATH=$CLASSPATH:/usr/local/share/kafka/plugins/debezium-connector-mysql/*
@@ -120,58 +122,57 @@ Start Kafka
 
 
 
+..
+	Create and fill a table
+
+	.. code-block:: sql
+
+		CREATE DATABASE IF NOT EXISTS movies;
+		USE movies;
+
+		CREATE TABLE Members (
+		  membership_number INT AUTO_INCREMENT PRIMARY KEY,
+		  full_names VARCHAR(150) NOT NULL ,
+		  gender VARCHAR(6) ,
+		  date_of_birth DATE ,
+		  physical_address VARCHAR(255) ,
+		  postal_address VARCHAR(255) ,
+		  contact_number VARCHAR(75) ,
+		  email VARCHAR(255),
+		  modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		);
 
 
-Create and fill a table
+		INSERT INTO Members(full_names,gender,physical_address,contact_number) VALUES ('Leonard Hofstadter','Male','Woodcrest','0845738767');  
 
-.. code-block:: sql
+		INSERT INTO Members(full_names,gender,physical_address,contact_number) VALUES ('Sheldon Cooper','Male','Woodcrest', '0976736763'); 
 
-	CREATE DATABASE IF NOT EXISTS movies;
-	USE movies;
+		INSERT INTO Members(full_names,gender,physical_address,contact_number)VALUES ('0938867763','Male','Rajesh Koothrappali','Woodcrest');   
 
-	CREATE TABLE Members (
-	  membership_number INT AUTO_INCREMENT PRIMARY KEY,
-	  full_names VARCHAR(150) NOT NULL ,
-	  gender VARCHAR(6) ,
-	  date_of_birth DATE ,
-	  physical_address VARCHAR(255) ,
-	  postal_address VARCHAR(255) ,
-	  contact_number VARCHAR(75) ,
-	  email VARCHAR(255),
-	  modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-	);
+		INSERT INTO Members(full_names,date_of_birth,gender,physical_address,contact_number) VALUES ('Leslie Winkle','1984-02-14','Male','Woodcrest', '0987636553');  
 
+		INSERT INTO Members VALUES (9,'Howard Wolowitz','Male','1981-08-24','SouthPark','P.O. Box 4563', '0987786553', 'lwolowitz[at]email.me', CURRENT_TIMESTAMP);
 
-	INSERT INTO Members(full_names,gender,physical_address,contact_number) VALUES ('Leonard Hofstadter','Male','Woodcrest','0845738767');  
+		SELECT * FROM Members;
 
-	INSERT INTO Members(full_names,gender,physical_address,contact_number) VALUES ('Sheldon Cooper','Male','Woodcrest', '0976736763'); 
+	Launch jdbc source connector
 
-	INSERT INTO Members(full_names,gender,physical_address,contact_number)VALUES ('0938867763','Male','Rajesh Koothrappali','Woodcrest');   
+	.. code-block:: default
 
-	INSERT INTO Members(full_names,date_of_birth,gender,physical_address,contact_number) VALUES ('Leslie Winkle','1984-02-14','Male','Woodcrest', '0987636553');  
+		curl -X POST -H "Content-Type: application/json" --data '{
+			"name": "jdbc-source-connector",
+			"config": {
+			"connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+			"tasks.max": 2,
+			"connection.url": "jdbc:mysql://localhost:3306/movies",
+			"connection.user": "xxxxxx",
+			"connection.password": "xxxxxx",
+			"mode": "incrementing",
+			"table.whitelist": "Members",
+			"incrementing.column.name": "membership_number",
+			"timestamp.column.name": "modified", 
+			"poll.interval.ms": 1000
+			}
+		}' http://xxx.xxx.xxx.xxx:8083/connectors
 
-	INSERT INTO Members VALUES (9,'Howard Wolowitz','Male','1981-08-24','SouthPark','P.O. Box 4563', '0987786553', 'lwolowitz[at]email.me', CURRENT_TIMESTAMP);
-
-	SELECT * FROM Members;
-
-Launch jdbc source connector
-
-.. code-block:: default
-
-	curl -X POST -H "Content-Type: application/json" --data '{
-		"name": "jdbc-source-connector",
-		"config": {
-		"connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
-		"tasks.max": 2,
-		"connection.url": "jdbc:mysql://localhost:3306/movies",
-		"connection.user": "xxxxxx",
-		"connection.password": "xxxxxx",
-		"mode": "incrementing",
-		"table.whitelist": "Members",
-		"incrementing.column.name": "membership_number",
-		"timestamp.column.name": "modified", 
-		"poll.interval.ms": 1000
-		}
-	}' http://xxx.xxx.xxx.xxx:8083/connectors
-
-Or from a script: ``https://github.com/edent/Open-Source-Shakespeare``
+	Or from a script: ``https://github.com/edent/Open-Source-Shakespeare``
