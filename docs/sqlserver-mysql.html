@@ -35,7 +35,8 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to A Working Apache Kafka Message Queue’s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -79,20 +80,20 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Replicate SQL Server CDC changes to MySql in real-time</a><ul>
-<li><a class="reference internal" href="#installing-mysql-on-centos-8-rhel-8">Installing MySQL on CentOS 8 / RHEL 8</a></li>
-<li><a class="reference internal" href="#installing-microsoft-sql-server-2019-on-centos-8-rhel-8">Installing Microsoft SQL Server 2019 on CentOS 8 / RHEL 8</a><ul>
-<li><a class="reference internal" href="#enable-remote-access-optional">Enable remote access (optional)</a></li>
-<li><a class="reference internal" href="#test-sql-server">Test SQL Server</a></li>
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Replicate SQL Server CDC changes to MySql in real-time</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installing-mysql-on-centos-8-rhel-8">Installing MySQL on CentOS 8 / RHEL 8</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-microsoft-sql-server-2019-on-centos-8-rhel-8">Installing Microsoft SQL Server 2019 on CentOS 8 / RHEL 8</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enable-remote-access-optional">Enable remote access (optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-sql-server">Test SQL Server</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id1">Replicate SQL Server CDC changes to MySql in real-time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Replicate SQL Server CDC changes to MySql in real-time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
 </ul>
 </li>
 </ul>
-</div>
+
             
           
         </div>
@@ -157,7 +158,6 @@
             
   <div class="section" id="replicate-sql-server-cdc-changes-to-mysql-in-real-time">
 <h1>Replicate SQL Server CDC changes to MySql in real-time<a class="headerlink" href="#replicate-sql-server-cdc-changes-to-mysql-in-real-time" title="Permalink to this headline">¶</a></h1>
-<p>Source: <a class="reference external" href="https://medium.com/&#64;gvsbharish/real-time-sql-server-cdc-changes-to-mysql-using-debezium-kafka-connect-without-docker-1317804efe59">https://medium.com/&#64;gvsbharish/real-time-sql-server-cdc-changes-to-mysql-using-debezium-kafka-connect-without-docker-1317804efe59</a></p>
 <p><strong>Requirements:</strong> A minimum of 3GB RAM for SQL Server</p>
 <div class="section" id="installing-mysql-on-centos-8-rhel-8">
 <h2>Installing MySQL on CentOS 8 / RHEL 8<a class="headerlink" href="#installing-mysql-on-centos-8-rhel-8" title="Permalink to this headline">¶</a></h2>
@@ -254,6 +254,14 @@ export CLASSPATH=$CLASSPATH:$HOME/kafka/libs/*
 </pre></div>
 </div>
 </div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://medium.com/&#64;gvsbharish/real-time-sql-server-cdc-changes-to-mysql-using-debezium-kafka-connect-without-docker-1317804efe59">Real-time SQL Server CDC changes to Mysql using Debezium, Kafka Connect without Docker</a>.</p></li>
+<li><p><a class="reference external" href="https://debezium.io/documentation/reference/install.html">Installing Debezium</a></p></li>
+<li><p><a class="reference external" href="https://docs.confluent.io/current/connect/userguide.html">Getting Started with Kafka Connect</a></p></li>
+</ul>
+</div>
 </div>
 
 
@@ -261,6 +269,13 @@ export CLASSPATH=$CLASSPATH:$HOME/kafka/libs/*
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to A Working Apache Kafka Message Queue’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

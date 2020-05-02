@@ -104,3 +104,9 @@ plugin.path=/opt/connectors
 # Restart your Kafka Connect process to pick up the new JARs
 ~/kafka/bin/connect-ditributed.sh ~/kafka/config/connect-distributed.properties
 # export CLASSPATH=$CLASSPATH:/usr/local/share/kafka/plugins/debezium-connector-postgresql/*
+
+
+References
+----------
+
+* `Deploying the PostgreSQL Connector <https://debezium.io/documentation/reference/1.1/connectors/postgresql.html#deploying-a-connector>`_

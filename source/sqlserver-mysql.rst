@@ -1,6 +1,5 @@
 Replicate SQL Server CDC changes to MySql in real-time
 ======================================================
-Source: https://medium.com/@gvsbharish/real-time-sql-server-cdc-changes-to-mysql-using-debezium-kafka-connect-without-docker-1317804efe59
 
 **Requirements:** A minimum of 3GB RAM for SQL Server
 
@@ -119,7 +118,12 @@ Start Kafka
 	tmux new -s kafka-server-start -d
 	tmux send-keys "~/kafka/bin/kafka-server-start.sh ~/kafka/config/server.properties" Enter
 
+References
+----------
 
+* `Real-time SQL Server CDC changes to Mysql using Debezium, Kafka Connect without Docker <https://medium.com/@gvsbharish/real-time-sql-server-cdc-changes-to-mysql-using-debezium-kafka-connect-without-docker-1317804efe59>`_.
+* `Installing Debezium <https://debezium.io/documentation/reference/install.html>`_
+* `Getting Started with Kafka Connect <https://docs.confluent.io/current/connect/userguide.html>`_
 
 
 ..

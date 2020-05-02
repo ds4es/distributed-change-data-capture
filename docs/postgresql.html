@@ -79,20 +79,10 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Up and running PostgreSQL replication with Debezium!</a><ul>
-<li><a class="reference internal" href="#installing-postgresql-on-centos-8">Installing PostgreSQL on CentOS 8</a><ul>
-<li><a class="reference internal" href="#change-postgresql-database-encoding-to-utf8">Change PostgreSQL database encoding to UTF8</a></li>
-<li><a class="reference internal" href="#enable-remote-access-optional">Enable remote access (optional)</a></li>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="sqlserver-mysql.html">Replicate SQL Server CDC changes to MySql in real-time</a></li>
 </ul>
-</li>
-<li><a class="reference internal" href="#load-data">Load data</a></li>
-<li><a class="reference internal" href="#setup-the-connector">Setup the connector</a></li>
-</ul>
-</li>
-</ul>
-</div>
+
             
           
         </div>
@@ -237,6 +227,12 @@ plugin.path=/opt/connectors
 # Restart your Kafka Connect process to pick up the new JARs
 ~/kafka/bin/connect-ditributed.sh ~/kafka/config/connect-distributed.properties
 # export CLASSPATH=$CLASSPATH:/usr/local/share/kafka/plugins/debezium-connector-postgresql/*</p>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://debezium.io/documentation/reference/1.1/connectors/postgresql.html#deploying-a-connector">Deploying the PostgreSQL Connector</a></p></li>
+</ul>
 </div>
 </div>
 

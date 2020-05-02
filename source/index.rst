@@ -15,7 +15,7 @@ Welcome to A Working Apache Kafka Message Queue's documentation!
 
 For the following instructions you will need 2 servers. Those instructions are for RHEL 8 / CentOS 8 ditributions and has been tested on DigitalOcean.
 
-*We recommend the use of SSH Keys and Passphrase for remote connection to your server. On Linux, you can create it with ssh-keygen (see https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys--2 for details)*
+We recommend the use of SSH Keys and Passphrase for remote connection to your server. On Linux, you can create it with ssh-keygen (see `How To Set Up SSH Keys <https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys--2>`_ for details)
 
 
 First connection to any of your server
@@ -150,7 +150,7 @@ See the information about a topic.
 
 .. code-block:: default
 
-	~/kafka/bin/kafka-topics.sh --describe --topic your_topic_namee --zookeeper zookeeper_ip_address:zookeeper_port
+	~/kafka/bin/kafka-topics.sh --describe --topic your_topic_name --zookeeper zookeeper_ip_address:zookeeper_port
 
 
 Retrieve connectors
@@ -172,7 +172,7 @@ Start a Connector
 
 
 
-Ressources
+References
 ----------
 
 * [Excellent debezium tutorial](https://debezium.io/documentation/reference/tutorial.html)
