@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Distributed change data capture'
+project = 'Real-time data replication between remote information systems'
 copyright = '2020, ds4es'
 author = 'ds4es'
 

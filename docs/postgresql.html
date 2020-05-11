@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Up and running PostgreSQL replication with Debezium! &mdash; Distributed change data capture 0.0.1 documentation</title>
+  <title>Up and running PostgreSQL replication with Debezium! &mdash; Real-time data replication between remote information systems 0.0.1 documentation</title>
   
 
   
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Distributed change data capture
+            <a href="index.html" class="icon icon-home"> Real-time data replication between remote information systems
           
 
           
@@ -95,7 +95,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Distributed change data capture</a>
+          <a href="index.html">Real-time data replication between remote information systems</a>
         
       </nav>
 
@@ -216,17 +216,19 @@
 </div>
 <div class="section" id="setup-the-connector">
 <h2>Setup the connector<a class="headerlink" href="#setup-the-connector" title="Permalink to this headline">¶</a></h2>
-<p># Create a directory where to store connectors
-sudo mkdir -p /usr/local/share/kafka/plugins
-# Place your needed connectors in it
-curl -s <a class="reference external" href="https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/1.1.1.Final/debezium-connector-postgres-1.1.1.Final-plugin.tar.gz">https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/1.1.1.Final/debezium-connector-postgres-1.1.1.Final-plugin.tar.gz</a> | sudo tar xvz -C /usr/local/share/kafka/plugins/debezium-connector-postgresql
-# Declare this path in your worker configuration file
-echo ‘
-plugin.path=/opt/connectors
-‘ | tee -a ~/kafka/config/connect-distributed.properties
-# Restart your Kafka Connect process to pick up the new JARs
-~/kafka/bin/connect-ditributed.sh ~/kafka/config/connect-distributed.properties
-# export CLASSPATH=$CLASSPATH:/usr/local/share/kafka/plugins/debezium-connector-postgresql/*</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a directory where to store connectors</span>
+<span class="n">sudo</span> <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">kafka</span><span class="o">/</span><span class="n">plugins</span>
+<span class="c1"># Place your needed connectors in it</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">s</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">repo1</span><span class="o">.</span><span class="n">maven</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">maven2</span><span class="o">/</span><span class="n">io</span><span class="o">/</span><span class="n">debezium</span><span class="o">/</span><span class="n">debezium</span><span class="o">-</span><span class="n">connector</span><span class="o">-</span><span class="n">postgres</span><span class="o">/</span><span class="mf">1.1</span><span class="o">.</span><span class="mf">1.</span><span class="n">Final</span><span class="o">/</span><span class="n">debezium</span><span class="o">-</span><span class="n">connector</span><span class="o">-</span><span class="n">postgres</span><span class="o">-</span><span class="mf">1.1</span><span class="o">.</span><span class="mf">1.</span><span class="n">Final</span><span class="o">-</span><span class="n">plugin</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span> <span class="o">|</span> <span class="n">sudo</span> <span class="n">tar</span> <span class="n">xvz</span> <span class="o">-</span><span class="n">C</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">kafka</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">debezium</span><span class="o">-</span><span class="n">connector</span><span class="o">-</span><span class="n">postgresql</span>
+<span class="c1"># Declare this path in your worker configuration file</span>
+<span class="n">echo</span> <span class="s1">&#39;</span>
+<span class="n">plugin</span><span class="o">.</span><span class="n">path</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">connectors</span>
+<span class="s1">&#39; | tee -a ~/kafka/config/connect-distributed.properties</span>
+<span class="c1"># Restart your Kafka Connect process to pick up the new JARs</span>
+<span class="o">~/</span><span class="n">kafka</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">connect</span><span class="o">-</span><span class="n">ditributed</span><span class="o">.</span><span class="n">sh</span> <span class="o">~/</span><span class="n">kafka</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">connect</span><span class="o">-</span><span class="n">distributed</span><span class="o">.</span><span class="n">properties</span>
+<span class="c1"># export CLASSPATH=$CLASSPATH:/usr/local/share/kafka/plugins/debezium-connector-postgresql/*</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>

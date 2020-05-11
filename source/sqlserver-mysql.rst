@@ -66,7 +66,8 @@ Test SQL Server
 	go
 	# Download a database script
 	mkdir ~/Downloads
-	curl -s https://ds4es.org/real-time-data-streaming-and-ingestion/_static/scripts/sql/bike_stores_sample_database.sql -o ~/Downloads
+	curl -s https://ds4es.org/real-time-data-streaming-and-ingestion/_static/scripts/sql/bike_stores_sample_database.sql -o ~/Downloads/bike_stores_sample_database.sql
+
 	# Execute
 	sqlcmd -S 127.0.0.1 -U SA -P password -Q "CREATE DATABASE BikeStores"
 	sqlcmd -S 127.0.0.1 -U SA -P password -d BikeStores -i ~/Downloads/bike_stores_sample_database.sql

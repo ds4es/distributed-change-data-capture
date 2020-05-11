@@ -93,17 +93,19 @@ Load data
 Setup the connector
 -------------------
 
-# Create a directory where to store connectors
-sudo mkdir -p /usr/local/share/kafka/plugins
-# Place your needed connectors in it
-curl -s https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/1.1.1.Final/debezium-connector-postgres-1.1.1.Final-plugin.tar.gz | sudo tar xvz -C /usr/local/share/kafka/plugins/debezium-connector-postgresql
-# Declare this path in your worker configuration file
-echo '
-plugin.path=/opt/connectors
-' | tee -a ~/kafka/config/connect-distributed.properties
-# Restart your Kafka Connect process to pick up the new JARs
-~/kafka/bin/connect-ditributed.sh ~/kafka/config/connect-distributed.properties
-# export CLASSPATH=$CLASSPATH:/usr/local/share/kafka/plugins/debezium-connector-postgresql/*
+.. code-block:: default
+
+	# Create a directory where to store connectors
+	sudo mkdir -p /usr/local/share/kafka/plugins
+	# Place your needed connectors in it
+	curl -s https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/1.1.1.Final/debezium-connector-postgres-1.1.1.Final-plugin.tar.gz | sudo tar xvz -C /usr/local/share/kafka/plugins/debezium-connector-postgresql
+	# Declare this path in your worker configuration file
+	echo '
+	plugin.path=/opt/connectors
+	' | tee -a ~/kafka/config/connect-distributed.properties
+	# Restart your Kafka Connect process to pick up the new JARs
+	~/kafka/bin/connect-ditributed.sh ~/kafka/config/connect-distributed.properties
+	# export CLASSPATH=$CLASSPATH:/usr/local/share/kafka/plugins/debezium-connector-postgresql/*
 
 
 References

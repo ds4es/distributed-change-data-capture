@@ -1,0 +1,230 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Debezium tutorial &mdash; Real-time data replication between remote information systems 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/js/custom.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Real-time data replication between remote information systems
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="sqlserver-mysql.html">Replicate SQL Server CDC changes to MySql in real-time</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Real-time data replication between remote information systems</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Debezium tutorial</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/debezium-tutorial.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="debezium-tutorial">
+<h1>Debezium tutorial<a class="headerlink" href="#debezium-tutorial" title="Permalink to this headline">¶</a></h1>
+<p>Prerequisites :</p>
+<ul class="simple">
+<li><p>Install Docker</p></li>
+<li><p>Add your user to the docker group (to run commands without <code class="docutils literal notranslate"><span class="pre">sudo</span></code>)</p></li>
+</ul>
+<div class="section" id="docker-essential-commands">
+<h2>Docker essential commands<a class="headerlink" href="#docker-essential-commands" title="Permalink to this headline">¶</a></h2>
+<p>To detach the tty without exiting the shell, use the escape sequence <code class="docutils literal notranslate"><span class="pre">Ctrl``+``P</span></code> followed by <code class="docutils literal notranslate"><span class="pre">Ctrl``+``Q</span></code>.</p>
+<p>List all the containers:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">ps</span>
+</pre></div>
+</div>
+<p>To display this information vertically:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export FORMAT=&quot;\nID\t{{.ID}}\nIMAGE\t{{.Image}}\nCOMMAND\t{{.Command}}\nCREATED\t{{.RunningFor}}\nSTATUS\t{{.Status}}\nPORTS\t{{.Ports}}\nNAMES\t{{.Names}}\n&quot;
+docker ps --format $FORMAT
+</pre></div>
+</div>
+<p>Access to a docker container terminal</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">exec</span> <span class="o">-</span><span class="n">it</span> <span class="n">docker_container_id</span> <span class="n">bash</span>
+</pre></div>
+</div>
+<p>Check the Docker container OS</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">grep</span> <span class="n">PRETTY_NAME</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">os</span><span class="o">-</span><span class="n">release</span> <span class="o">|</span> <span class="n">sed</span> <span class="s1">&#39;s/PRETTY_NAME=//g&#39;</span> <span class="o">|</span> <span class="n">tr</span> <span class="o">-</span><span class="n">d</span> <span class="s1">&#39;=&quot;&#39;</span>
+</pre></div>
+</div>
+<p>Reverse-engineer a Dockerfile from a Docker image</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export argv=&quot;image_name&quot;
+docker history --no-trunc $argv  | tac | tr -s &#39; &#39; | cut -d &quot; &quot; -f 5- | sed &#39;s,^/bin/sh -c #(nop) ,,g&#39; | sed &#39;s,^/bin/sh -c,RUN,g&#39; | sed &#39;s, &amp;&amp; ,\n  &amp; ,g&#39; | sed &#39;s,\s*[0-9]*[\.]*[0-9]*\s*[kMG]*B\s*$,,g&#39; | head -n -1
+</pre></div>
+</div>
+</div>
+<div class="section" id="id1">
+<h2>Debezium tutorial<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Starting Zookeeper</span>
+<span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">it</span> <span class="o">--</span><span class="n">rm</span> <span class="o">--</span><span class="n">name</span> <span class="n">zookeeper</span> <span class="o">-</span><span class="n">p</span> <span class="mi">2181</span><span class="p">:</span><span class="mi">2181</span> <span class="o">-</span><span class="n">p</span> <span class="mi">2888</span><span class="p">:</span><span class="mi">2888</span> <span class="o">-</span><span class="n">p</span> <span class="mi">3888</span><span class="p">:</span><span class="mi">3888</span> <span class="n">debezium</span><span class="o">/</span><span class="n">zookeeper</span><span class="p">:</span><span class="mf">1.1</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, ds4es
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
